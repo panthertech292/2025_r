@@ -20,6 +20,7 @@ Robot Code &amp; Resources for PantherTech's 2025 season.
 - Perhaps try Choreo? It factors in robot properites like weight, so you can get the most optiomal speeds. Also can directly supply paths to PathPlannerLib, no code changes needed.
   - https://docs.wpilib.org/en/stable/docs/software/pathplanning/choreo/index.html
   - https://www.chiefdelphi.com/t/choreo-vs-pathplanner/467373
+- GitHub Actions
 
 ### Things to different this year
 - Make sure to tune Drive PID!
