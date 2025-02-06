@@ -9,7 +9,12 @@ Robot Code &amp; Resources for PantherTech's 2025 season.
 - Motion Magic for mechanism position control - https://v6.docs.ctr-electronics.com/en/2024/docs/api-reference/device-specific/talonfx/motion-magic.html
    - https://github.com/CrossTheRoadElec/Phoenix6-Examples/tree/main/java/MotionMagic
 - Robot Alerts - Either elastic or the new ones in WPILib
-- Logging - https://docs.wpilib.org/en/stable/docs/software/telemetry/robot-telemetry-with-annotations.html
+- Logging
+  - CTRE Signal Logging: https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html
+  - AdvantageScope: https://docs.advantagescope.org/
+  - WPI Logs: https://docs.wpilib.org/en/stable/docs/software/telemetry/robot-telemetry-with-annotations.html
+
+- SysID: https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/introduction.html
 - Use new WPILib LED Code (No more coding lights for hours!) - https://docs.wpilib.org/en/stable/docs/software/hardware-apis/misc/addressable-leds.html#led-patterns
 - Object Detection? (LimeLight 4)
 - Perhaps try Choreo? It factors in robot properites like weight, so you can get the most optiomal speeds. Also can directly supply paths to PathPlannerLib, no code changes needed.
