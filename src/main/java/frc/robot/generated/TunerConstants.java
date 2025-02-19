@@ -27,7 +27,7 @@ public class TunerConstants {
         /*  .withKP(100).withKI(0).withKD(0.5) // ORIGNAL CTRE VALUES
         .withKS(0.1).withKV(2.05).withKA(0)
         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);*/
-        .withKP(50).withKI(0).withKD(0) // TODO: TUNE THESE MORE
+        .withKP(100).withKI(0).withKD(0) // TODO: TUNE THESE MORE
         .withKS(0.1).withKV(0).withKA(0)
         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 
