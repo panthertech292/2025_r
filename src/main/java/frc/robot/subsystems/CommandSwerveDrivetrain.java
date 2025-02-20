@@ -32,6 +32,8 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+    LimelightHelpers.PoseEstimate llMeasurement;
+
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -121,7 +123,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @param drivetrainConstants   Drivetrain-wide constants for the swerve drive
      * @param modules               Constants for each specific module
      */
-    public CommandSwerveDrivetrain(
+    public CommandSwerveDrivetrain( // NOTE: This is the constructor we use
         SwerveDrivetrainConstants drivetrainConstants,
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
@@ -272,11 +274,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         double omegaRPS = Units.radiansToRotations(getState().Speeds.omegaRadiansPerSecond);
         double headingDeg = getState().Pose.getRotation().getDegrees();
         LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
         if (llMeasurement != null && llMeasurement.tagCount > 0 && omegaRPS < 2.0) { //TODO: Check if STD Devs is good
             //addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds), VecBuilder.fill(.7,.7,9999999));
             addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
+        }
+    }
+
+    public void poseToLL() { //NOTE: USE THIS FOR TESTING ONLY
+        if(llMeasurement != null && llMeasurement.tagCount > 0){
+            resetPose(llMeasurement.pose);
         }
     }
 
