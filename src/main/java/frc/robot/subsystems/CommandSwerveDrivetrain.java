@@ -55,7 +55,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     PhotonPoseEstimator photonPoseEstimator;
     Pose2d PhotonPose = new Pose2d();
-
+    private int selectedCommand = 0;
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -340,6 +340,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         return AutoBuilder.pathfindToPose(pose, constraints,0.0);
   }
+    public int getSelectedCommand(){
+        return selectedCommand;
+    }
+    public void setSelectedCommand(int command){
+        selectedCommand = command;
+    }
 
     private void updateVisionOdometry(){
         double omegaRPS = Units.radiansToRotations(getState().Speeds.omegaRadiansPerSecond);

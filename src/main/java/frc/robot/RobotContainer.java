@@ -6,16 +6,20 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -41,6 +45,27 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final SendableChooser<Command> autoChooser;
+    
+    private enum CommandSelector {
+        ONE,
+        TWO,
+    }
+
+    private CommandSelector select() {
+        if(drivetrain.getSelectedCommand() == 1){
+            return CommandSelector.ONE;
+        }
+        return CommandSelector.TWO;
+    }
+
+    private final Command m_exampleSelectCommand =
+      new SelectCommand<>(
+          // Maps selector values to commands
+          Map.ofEntries(
+              Map.entry(CommandSelector.ONE, drivetrain.driveToPose(new Pose2d(2.87,4.12, new Rotation2d()))),
+              Map.entry(CommandSelector.TWO, drivetrain.driveToPose(new Pose2d(5.37,5.41, new Rotation2d(Units.degreesToRadians(-122.0))))) 
+              ),
+          this::select);
 
     public RobotContainer() {
         PortForwarder.add(5800, "photonvision.local", 5800);
@@ -90,6 +115,9 @@ public class RobotContainer {
         joystick.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.poseToLL()));
 
         joystick.y().whileTrue(drivetrain.driveToPose(new Pose2d(4,1.5, new Rotation2d()))); //THIS IS A TEST BUTTON
+        joystick.x().whileTrue(m_exampleSelectCommand);
+        joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.setSelectedCommand(1)));
+        joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.setSelectedCommand(2)));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
