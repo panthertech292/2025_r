@@ -19,5 +19,8 @@ public final class Constants {
   public static class ElevatorConstants {
     public static final int kLeftElevatorMotor = 20;
     public static final int kRightElevatorMotor = 21;
+    public static final int kCANdi = 22;
+
+    public static final double kElevatorGearDiameter = 2.551;
   }
 }
