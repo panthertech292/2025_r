@@ -28,6 +28,7 @@ public class SetElevatorSpeed extends Command {
   @Override
   public void execute() {
     ElvSubsystem.setElevator(elvSpeed);
+    //ElvSubsystem.setElevatorVoltage(elvSpeed);
   }
 
   // Called once the command ends or is interrupted.

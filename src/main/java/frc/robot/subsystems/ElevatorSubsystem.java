@@ -9,8 +9,10 @@ import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.S1FloatStateValue;
@@ -24,18 +26,33 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final TalonFX rightElevatorMotor;
   private final CANdi elevatorCANdi;
   private final DutyCycleOut elevatorPower;
+  private final MotionMagicVoltage elevatorMotionMagicVoltage;
   /** Creates a new ExampleSubsystem. */
   public ElevatorSubsystem() {
     leftElevatorMotor = new TalonFX(ElevatorConstants.kLeftElevatorMotor);
     rightElevatorMotor = new TalonFX(ElevatorConstants.kRightElevatorMotor);
     elevatorCANdi = new CANdi(ElevatorConstants.kCANdi);
     elevatorPower = new DutyCycleOut(0.0);
+    elevatorMotionMagicVoltage = new MotionMagicVoltage(0);
 
     TalonFXConfiguration leftConfig = new TalonFXConfiguration();
     leftConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     leftConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     leftConfig.CurrentLimits.StatorCurrentLimit = ElevatorConstants.kElevatorStatorCurrentLimit;
+    leftConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANdiPWM1;
+    leftConfig.Feedback.FeedbackRemoteSensorID = ElevatorConstants.kCANdi;
+    //MotionMagic
+    //leftConfig.Slot0.kS = ;
+    //leftConfig.Slot0.kV = ;
+    //leftConfig.Slot0.kA = ;
+    //leftConfig.Slot0.kP = ;
+    //leftConfig.Slot0.kI = 0;
+    //leftConfig.Slot0.kD = ;
+    //leftConfig.MotionMagic.MotionMagicCruiseVelocity = ;
+    //leftConfig.MotionMagic.MotionMagicAcceleration = ;
+    //leftConfig.MotionMagic.MotionMagicJerk = ; TODO: Might want this?
+
     leftElevatorMotor.getConfigurator().apply(leftConfig);
 
     TalonFXConfiguration rightConfig = new TalonFXConfiguration();
@@ -57,6 +74,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void setElevator(double speed){ //Note: These limits only check when called.
     leftElevatorMotor.setControl(elevatorPower.withOutput(speed)
+    .withLimitForwardMotion(isElevatorMaxHeight())
+    .withLimitReverseMotion(isElevatorMinHeight()));
+  }
+  public void setElevatorVoltage(double voltage){ // Note: This is for testing and getting gains
+    leftElevatorMotor.setVoltage(voltage);
+  }
+  public void setElevatorHeight(double height){ //Untested
+    double rots = height / ElevatorConstants.kElevatorGearDiameter / Math.PI; //convert height to motor rotations
+    leftElevatorMotor.setControl(elevatorMotionMagicVoltage.withPosition(rots)
     .withLimitForwardMotion(isElevatorMaxHeight())
     .withLimitReverseMotion(isElevatorMinHeight()));
   }
