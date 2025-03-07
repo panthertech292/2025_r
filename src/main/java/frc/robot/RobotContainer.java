@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.SetElevatorHeight;
 import frc.robot.commands.SetElevatorSpeed;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,8 +26,8 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-  private final Command setElvatorUp = new SetElevatorSpeed(m_ElevatorSubsystem, 0.10);
-  private final Command setElevatorDown = new SetElevatorSpeed(m_ElevatorSubsystem, -0.10);
+  private final Command setElvatorUp = new SetElevatorSpeed(m_ElevatorSubsystem, .20);
+  private final Command setElevatorDown = new SetElevatorSpeed(m_ElevatorSubsystem, -.20);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -47,6 +48,8 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driverController.y().whileTrue(setElvatorUp);
     m_driverController.a().whileTrue(setElevatorDown);
+    m_driverController.b().whileTrue(new SetElevatorHeight(m_ElevatorSubsystem, 20));
+    m_driverController.x().whileTrue(new SetElevatorHeight(m_ElevatorSubsystem, 5));
   }
 
   /**

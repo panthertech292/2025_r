@@ -23,7 +23,7 @@ public final class Constants {
 
     public static final double kElevatorGearDiameter = 2.551;
 
-    public static final double kElevatorStatorCurrentLimit = 10; //TODO: Tune this
+    public static final double kElevatorStatorCurrentLimit = 20; //TODO: Tune this
 
     public static final double kElevatorMaxHeight = 24.176; //this is 3.016 rotations
     public static final double kElevatorMinHeight = 0.25; //TODO: Tune this
