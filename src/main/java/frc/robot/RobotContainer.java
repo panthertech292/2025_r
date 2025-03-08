@@ -5,9 +5,11 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.RotateGrabber;
 import frc.robot.commands.SetElevatorHeight;
 import frc.robot.commands.SetElevatorSpeed;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -21,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
+  private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -50,6 +53,8 @@ public class RobotContainer {
     m_driverController.a().whileTrue(setElevatorDown);
     m_driverController.b().whileTrue(new SetElevatorHeight(m_ElevatorSubsystem, 20));
     m_driverController.x().whileTrue(new SetElevatorHeight(m_ElevatorSubsystem, 5));
+    m_driverController.rightBumper().whileTrue(new RotateGrabber(m_GrabberSubsystem, 0.1));
+    m_driverController.leftBumper().whileTrue(new RotateGrabber(m_GrabberSubsystem, -0.1));
   }
 
   /**
