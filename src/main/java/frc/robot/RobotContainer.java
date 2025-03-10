@@ -4,15 +4,16 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ElevatorConstants.ElevatorHeights;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.DefaultElevator;
 import frc.robot.commands.RotateGrabber;
-import frc.robot.commands.SetElevatorHeight;
+import frc.robot.commands.SetElevatorSetPoint;
 import frc.robot.commands.SetElevatorSpeed;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,23 +37,16 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    //Default commands
+    m_ElevatorSubsystem.setDefaultCommand(new DefaultElevator(m_ElevatorSubsystem));
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driverController.y().whileTrue(setElvatorUp);
     m_driverController.a().whileTrue(setElevatorDown);
-    m_driverController.b().whileTrue(new SetElevatorHeight(m_ElevatorSubsystem, 20));
-    m_driverController.x().whileTrue(new SetElevatorHeight(m_ElevatorSubsystem, 5));
+    m_driverController.x().onTrue(new SetElevatorSetPoint(m_ElevatorSubsystem, ElevatorHeights.L3));
+    m_driverController.b().onTrue(new SetElevatorSetPoint(m_ElevatorSubsystem, ElevatorHeights.L4));
     m_driverController.rightBumper().whileTrue(new RotateGrabber(m_GrabberSubsystem, 0.1));
     m_driverController.leftBumper().whileTrue(new RotateGrabber(m_GrabberSubsystem, -0.1));
   }

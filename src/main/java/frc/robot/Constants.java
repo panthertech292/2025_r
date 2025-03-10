@@ -17,16 +17,30 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static class ElevatorConstants {
+    public static enum ElevatorHeights{DOWN, L3, L4, ALGEE_LOW, ALGEE_HIGH};
     public static final int kLeftElevatorMotor = 20;
     public static final int kRightElevatorMotor = 21;
     public static final int kCANdi = 22;
 
     public static final double kElevatorGearDiameter = 2.551;
+    public static final int kIntEncoderToExtRatio = 64;
 
     public static final double kElevatorStatorCurrentLimit = 20; //TODO: Tune this
 
     public static final double kElevatorMaxHeight = 24.176; //this is 3.016 rotations
     public static final double kElevatorMinHeight = 0.25; //TODO: Tune this
+    public static final double kElevatorL3Height = 5; //TODO: Tune this
+    public static final double kElevatorL4Height = 10; //TODO: Tune this
+    public static final double kElevatorLowAlgeeHeight = 0.25; //TODO: Tune this
+    public static final double kElevatorHighAlgeeHeight = 0.25; //TODO: Tune this
     public static final double kElevatorEncoderOffset = .809;
+  }
+  public static class GrabberConstants {
+    public static final int kRotateMotor = 30;
+    public static final int kCANdiMotorEncoders = 99; //TODO: Set this value!
+
+    public static final double kRotateIntEncoderToExtRatio = 16 * (145/18); // (Should be 128.89). 16 is from gearbox, 145/18 is the pulley. 
+
+    public static final double kRotateStatorCurrentLimit = 20; //TODO: Tune this!
   }
 }

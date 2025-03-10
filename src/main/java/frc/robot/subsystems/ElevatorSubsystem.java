@@ -9,7 +9,6 @@ import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
-//import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,14 +20,15 @@ import com.ctre.phoenix6.signals.S1FloatStateValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorConstants.ElevatorHeights;
 
 public class ElevatorSubsystem extends SubsystemBase {
+  private double elevatorHeight;
   private final TalonFX leftElevatorMotor;
   private final TalonFX rightElevatorMotor;
   private final CANdi elevatorCANdi;
   private final DutyCycleOut elevatorPower;
   private final MotionMagicVoltage elevatorMotionMagicVoltage;
-  //private final MotionMagicExpoVoltage elevatorEXPO;
   /** Creates a new ExampleSubsystem. */
   public ElevatorSubsystem() {
     leftElevatorMotor = new TalonFX(ElevatorConstants.kLeftElevatorMotor);
@@ -36,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorCANdi = new CANdi(ElevatorConstants.kCANdi);
     elevatorPower = new DutyCycleOut(0.0);
     elevatorMotionMagicVoltage = new MotionMagicVoltage(0);
-    //elevatorEXPO = new MotionMagicExpoVoltage(0);
+    elevatorHeight = ElevatorConstants.kElevatorMinHeight;
 
     TalonFXConfiguration leftConfig = new TalonFXConfiguration();
     leftConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -45,7 +45,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     leftConfig.CurrentLimits.StatorCurrentLimit = ElevatorConstants.kElevatorStatorCurrentLimit;
     leftConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANdiPWM1;
     leftConfig.Feedback.FeedbackRemoteSensorID = ElevatorConstants.kCANdi;
-    leftConfig.Feedback.RotorToSensorRatio = 64;
+    leftConfig.Feedback.RotorToSensorRatio = ElevatorConstants.kIntEncoderToExtRatio;
 
     //MotionMagic
     leftConfig.Slot0.kG = 0.04;
@@ -58,9 +58,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     leftConfig.MotionMagic.MotionMagicCruiseVelocity = 4;
     leftConfig.MotionMagic.MotionMagicAcceleration = 8;
     leftConfig.MotionMagic.MotionMagicJerk = 80;
-
-    //leftConfig.MotionMagic.MotionMagicExpo_kV = 1.27;//0.12; // kV is around 0.12 V/rps
-    //leftConfig.MotionMagic.MotionMagicExpo_kA = 0.1;
 
     leftElevatorMotor.getConfigurator().apply(leftConfig);
 
@@ -94,9 +91,29 @@ public class ElevatorSubsystem extends SubsystemBase {
       double rots = height / ElevatorConstants.kElevatorGearDiameter / Math.PI; //convert height to motor rotations
       SmartDashboard.putNumber("Desired rotation", rots);
       leftElevatorMotor.setControl(elevatorMotionMagicVoltage.withPosition(rots)
-      //leftElevatorMotor.setControl(elevatorEXPO.withPosition(rots)
       .withLimitForwardMotion(isElevatorMaxHeight())
       .withLimitReverseMotion(isElevatorMinHeight()));
+    }
+  }
+  public void runElevatorFromSetHeight(){
+    setElevatorHeight(elevatorHeight);
+  }
+
+  public void setElevatorSetPoint(ElevatorHeights elevatorSetPoint){
+    if(elevatorSetPoint == ElevatorHeights.DOWN){
+      elevatorHeight = ElevatorConstants.kElevatorMinHeight;
+    }
+    if(elevatorSetPoint == ElevatorHeights.L3){
+      elevatorHeight = ElevatorConstants.kElevatorL3Height;
+    }
+    if(elevatorSetPoint == ElevatorHeights.L4){
+      elevatorHeight = ElevatorConstants.kElevatorL4Height;
+    }
+    if(elevatorSetPoint == ElevatorHeights.ALGEE_LOW){
+      elevatorHeight = ElevatorConstants.kElevatorLowAlgeeHeight;
+    }
+    if(elevatorSetPoint == ElevatorHeights.ALGEE_HIGH){
+      elevatorHeight = ElevatorConstants.kElevatorHighAlgeeHeight;
     }
   }
 
