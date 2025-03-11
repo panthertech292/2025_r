@@ -65,4 +65,10 @@ public final class Constants {
     public static final double kRotationLowAlgee = 0; //TODO: Find this!
     public static final double kRotationHighAlgee = 0; //TODO: Find this!
   }
+  public static class IntakeOutputConstants{
+    public static final int kIntakeMotor = 51;
+    public static final int kOutputMotor = 50;
+
+    public static final double kStatorCurrentLimit = 20;
+  }
 }

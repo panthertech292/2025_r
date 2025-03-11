@@ -45,6 +45,7 @@ public class GrabberSubsystem extends SubsystemBase {
     CANdiConfig.DigitalInputs.S2FloatState = S2FloatStateValue.FloatDetect;
     //CANdiConfig.PWM2.AbsoluteSensorOffset = GrabberConstants.kTranslationEncoderOffset;
     GrabberCANdi.getConfigurator().apply(CANdiConfig);
+    
     //Rotate Motor Config
     rotateMotor = new TalonFXS(GrabberConstants.kRotateMotor);
     rotatePower = new DutyCycleOut(0);

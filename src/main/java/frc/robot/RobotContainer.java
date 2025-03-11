@@ -12,7 +12,9 @@ import frc.robot.commands.SetElevatorSetPoint;
 import frc.robot.commands.SetElevatorSpeed;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.subsystems.IntakeOutputSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
@@ -25,6 +27,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
   private final GrabberSubsystem m_GrabberSubsystem = new GrabberSubsystem();
+  private final IntakeOutputSubsystem m_IntakeOutputSubsystem = new IntakeOutputSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -43,12 +46,16 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    m_driverController.y().whileTrue(setElvatorUp);
-    m_driverController.a().whileTrue(setElevatorDown);
-    m_driverController.x().onTrue(new SetElevatorSetPoint(m_ElevatorSubsystem, ElevatorHeights.L3));
-    m_driverController.b().onTrue(new SetElevatorSetPoint(m_ElevatorSubsystem, ElevatorHeights.L4));
+    //m_driverController.y().whileTrue(setElvatorUp);
+    //m_driverController.a().whileTrue(setElevatorDown);
+    m_driverController.a().onTrue(new SetElevatorSetPoint(m_ElevatorSubsystem, ElevatorHeights.L3));
+    m_driverController.y().onTrue(new SetElevatorSetPoint(m_ElevatorSubsystem, ElevatorHeights.L4));
     m_driverController.rightBumper().whileTrue(new RotateGrabber(m_GrabberSubsystem, 0.1));
     m_driverController.leftBumper().whileTrue(new RotateGrabber(m_GrabberSubsystem, -0.1));
+    m_driverController.x().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setIntake(.30), () -> m_IntakeOutputSubsystem.setIntake(0), m_IntakeOutputSubsystem));
+    m_driverController.b().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setIntake(-.30), () -> m_IntakeOutputSubsystem.setIntake(0), m_IntakeOutputSubsystem));
+    m_driverController.povUp().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setOutput(.30), () -> m_IntakeOutputSubsystem.setOutput(0), m_IntakeOutputSubsystem));
+    m_driverController.povDown().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setOutput(-.30), () -> m_IntakeOutputSubsystem.setOutput(0), m_IntakeOutputSubsystem));
   }
 
   /**
