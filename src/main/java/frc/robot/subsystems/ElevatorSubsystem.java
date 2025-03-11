@@ -23,7 +23,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorHeights;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  private double elevatorHeight;
+  private double elevatorSetHeight;
   private final TalonFX leftElevatorMotor;
   private final TalonFX rightElevatorMotor;
   private final CANdi elevatorCANdi;
@@ -36,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorCANdi = new CANdi(ElevatorConstants.kCANdi);
     elevatorPower = new DutyCycleOut(0.0);
     elevatorMotionMagicVoltage = new MotionMagicVoltage(0);
-    elevatorHeight = ElevatorConstants.kElevatorMinHeight;
+    elevatorSetHeight = ElevatorConstants.kElevatorMinHeight;
 
     TalonFXConfiguration leftConfig = new TalonFXConfiguration();
     leftConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -96,25 +96,29 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
   public void runElevatorFromSetHeight(){
-    setElevatorHeight(elevatorHeight);
+    setElevatorHeight(elevatorSetHeight);
   }
 
   public void setElevatorSetPoint(ElevatorHeights elevatorSetPoint){
     if(elevatorSetPoint == ElevatorHeights.DOWN){
-      elevatorHeight = ElevatorConstants.kElevatorMinHeight;
+      elevatorSetHeight = ElevatorConstants.kElevatorMinHeight;
     }
     if(elevatorSetPoint == ElevatorHeights.L3){
-      elevatorHeight = ElevatorConstants.kElevatorL3Height;
+      elevatorSetHeight = ElevatorConstants.kElevatorL3Height;
     }
     if(elevatorSetPoint == ElevatorHeights.L4){
-      elevatorHeight = ElevatorConstants.kElevatorL4Height;
+      elevatorSetHeight = ElevatorConstants.kElevatorL4Height;
     }
     if(elevatorSetPoint == ElevatorHeights.ALGEE_LOW){
-      elevatorHeight = ElevatorConstants.kElevatorLowAlgeeHeight;
+      elevatorSetHeight = ElevatorConstants.kElevatorLowAlgeeHeight;
     }
     if(elevatorSetPoint == ElevatorHeights.ALGEE_HIGH){
-      elevatorHeight = ElevatorConstants.kElevatorHighAlgeeHeight;
+      elevatorSetHeight = ElevatorConstants.kElevatorHighAlgeeHeight;
     }
+  }
+
+  public boolean isElevatorAtHeight(){
+    return (Math.abs(getElevatorHeight()-elevatorSetHeight) < .05);
   }
 
   public double getElevatorHeight(){ //Gets elevator height in inches

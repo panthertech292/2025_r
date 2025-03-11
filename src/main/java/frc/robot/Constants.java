@@ -36,11 +36,33 @@ public final class Constants {
     public static final double kElevatorEncoderOffset = .809;
   }
   public static class GrabberConstants {
+    public static enum GrabberLocations{STOWED,L1, L2, L3, L4, ALGEE_LOW, ALGEE_HIGH, STATION}
     public static final int kRotateMotor = 30;
-    public static final int kCANdiMotorEncoders = 99; //TODO: Set this value!
+    public static final int kTranslationMotor = 31; //TODO: Set this motor;
+    public static final int kCANdi = 32;
 
     public static final double kRotateIntEncoderToExtRatio = 16 * (145/18); // (Should be 128.89). 16 is from gearbox, 145/18 is the pulley. 
+    public static final double kTranslateIntEncoderToExtRatio = 16; //16 from gearbox
+    public static final double kTranslatePulleyDiameter = 0; //TODO: Find this!
+    public static final double kRotateEncoderOffset = 0.189;
+    public static final double kTranslationEncoderOffset = 0; //TODO: Find this!
 
     public static final double kRotateStatorCurrentLimit = 20; //TODO: Tune this!
+    public static final double kTranslateStatorCurrentLimit = 20; //TODO: Tune this
+
+    public static final double kRotationMaxClockwise = 0.15; //.25 full limit
+    public static final double kRotationMinCounterClockwise = -0.15; //-.24 full limit
+
+    public static final double KTranslationMaxLeft = 0; //TODO: Find this!
+    public static final double kTranslationMaxRight = 0; //TODO: Find this!
+    public static final double kTranslationStowed = 0;
+
+    public static final double kRotationStowed = 0;
+    public static final double kRotationL1 = 0; //TODO: Find this!
+    public static final double kRotationL2 = 0; //TODO: Find this!
+    public static final double kRotationL3 = 0; //TODO: Find this!
+    public static final double kRotationL4 = 0; //TODO: Find this!
+    public static final double kRotationLowAlgee = 0; //TODO: Find this!
+    public static final double kRotationHighAlgee = 0; //TODO: Find this!
   }
 }
