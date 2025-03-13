@@ -71,4 +71,7 @@ public final class Constants {
 
     public static final double kStatorCurrentLimit = 20;
   }
+  public static class ClimberConstants{
+    public static final int kClimberMotor = 40;
+  }
 }
