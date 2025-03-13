@@ -48,9 +48,9 @@ public class IntakeOutputSubsystem extends SubsystemBase {
     setIntake(speed);
     setOutput(speed);
   }
-  public void setBothOpposite(double speed){
-    setIntake(speed);
-    setOutput(-(speed*7));
+  public void setBothOpposite(double intakeSpeed, double outputSpeed){
+    setIntake(intakeSpeed);
+    setOutput(-outputSpeed);
   }
 
   @Override

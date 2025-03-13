@@ -50,8 +50,8 @@ public final class Constants {
     public static final double kRotateStatorCurrentLimit = 20; //TODO: Tune this!
     public static final double kTranslateStatorCurrentLimit = 20; //TODO: Tune this
 
-    public static final double kRotationMaxClockwise = 0.15; //.25 full limit
-    public static final double kRotationMinCounterClockwise = -0.15; //-.24 full limit
+    public static final double kRotationMaxClockwise = 0.27; //.25 full limit
+    public static final double kRotationMinCounterClockwise = -0.27; //-.24 full limit
 
     public static final double KTranslationMaxLeft = 0; //TODO: Find this!
     public static final double kTranslationMaxRight = 0; //TODO: Find this!
