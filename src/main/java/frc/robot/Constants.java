@@ -68,7 +68,7 @@ public final class Constants {
     public static final int kIntakeMotor = 51;
     public static final int kOutputMotor = 50;
     //Current Limits
-    public static final double kStatorCurrentLimit = 20;
+    public static final double kSupplyCurrentLimit = 20;
   }
   public static class ClimberConstants{
     //Devices
