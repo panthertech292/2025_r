@@ -27,13 +27,13 @@ public final class Constants {
 
     public static final double kElevatorStatorCurrentLimit = 20; //TODO: Tune this
 
-    public static final double kElevatorMaxHeight = 24.176; //this is 3.016 rotations
+    public static final double kElevatorMaxHeight = 28.5; //this is 3.016 rotations
     public static final double kElevatorMinHeight = 0.25; //TODO: Tune this
     public static final double kElevatorL3Height = 5; //TODO: Tune this
     public static final double kElevatorL4Height = 10; //TODO: Tune this
     public static final double kElevatorLowAlgeeHeight = 0.25; //TODO: Tune this
     public static final double kElevatorHighAlgeeHeight = 0.25; //TODO: Tune this
-    public static final double kElevatorEncoderOffset = .809;
+    public static final double kElevatorEncoderOffset = 0.627;
   }
   public static class GrabberConstants {
     public static enum GrabberLocations{STOWED,L1, L2, L3, L4, ALGEE_LOW, ALGEE_HIGH, STATION}

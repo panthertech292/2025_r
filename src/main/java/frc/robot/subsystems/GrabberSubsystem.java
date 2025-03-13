@@ -25,12 +25,12 @@ import frc.robot.Constants.GrabberConstants.GrabberLocations;
 
 public class GrabberSubsystem extends SubsystemBase {
   private final TalonFXS rotateMotor;
-  //private final TalonFXS translationMotor;
+  private final TalonFXS translationMotor;
   private final CANdi GrabberCANdi;
   private final MotionMagicVoltage rotateMotionMagicVoltage;
-  //private final MotionMagicVoltage translationMotionMagicVoltage;
+  private final MotionMagicVoltage translationMotionMagicVoltage;
   private final DutyCycleOut rotatePower;
-  //private final DutyCycleOut translationPower;
+  private final DutyCycleOut translationPower;
   private double rotationAngle;
   private double translationPosition;
   /** Creates a new GrabberSubsystem. */
@@ -43,7 +43,7 @@ public class GrabberSubsystem extends SubsystemBase {
     CANdiConfig.DigitalInputs.S1FloatState = S1FloatStateValue.FloatDetect;
     CANdiConfig.PWM1.AbsoluteSensorOffset = GrabberConstants.kRotateEncoderOffset;
     CANdiConfig.DigitalInputs.S2FloatState = S2FloatStateValue.FloatDetect;
-    //CANdiConfig.PWM2.AbsoluteSensorOffset = GrabberConstants.kTranslationEncoderOffset;
+    CANdiConfig.PWM2.AbsoluteSensorOffset = GrabberConstants.kTranslationEncoderOffset;
     GrabberCANdi.getConfigurator().apply(CANdiConfig);
     
     //Rotate Motor Config
@@ -74,7 +74,7 @@ public class GrabberSubsystem extends SubsystemBase {
 
     rotateMotor.getConfigurator().apply(rotateMotorConfig);
     //Translation motor config
-    /*translationMotor = new TalonFXS(GrabberConstants.kTranslationMotor);
+    translationMotor = new TalonFXS(GrabberConstants.kTranslationMotor);
     translationPower = new DutyCycleOut(0);
     TalonFXSConfiguration translationMotorConfig = new TalonFXSConfiguration();
     translationMotorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
@@ -97,7 +97,7 @@ public class GrabberSubsystem extends SubsystemBase {
     translationMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 0;
     translationMotorConfig.MotionMagic.MotionMagicAcceleration = 0;
     translationMotorConfig.MotionMagic.MotionMagicJerk = 0;
-    translationMotor.getConfigurator().apply(translationMotorConfig);*/
+    translationMotor.getConfigurator().apply(translationMotorConfig);
 
     BaseStatusSignal.setUpdateFrequencyForAll(100, GrabberCANdi.getPWM1Position(), GrabberCANdi.getPWM2Position());
   }
@@ -121,7 +121,7 @@ public class GrabberSubsystem extends SubsystemBase {
   public boolean isRotationMinCounterClockwise(){
     return getRotationAngle() < GrabberConstants.kRotationMinCounterClockwise;
   }
-  /*public void setTranslation(double speed){
+  public void setTranslation(double speed){
     translationMotor.setControl(translationPower.withOutput(speed)
     .withLimitForwardMotion(isTranslationMaxRight())
     .withLimitReverseMotion(isTranslationMaxLeft()));
@@ -130,15 +130,15 @@ public class GrabberSubsystem extends SubsystemBase {
     translationMotor.setControl(translationMotionMagicVoltage.withPosition(distance)
     .withLimitForwardMotion(isTranslationMaxRight())
     .withLimitReverseMotion(isTranslationMaxLeft()));
-  }*/
+  }
   public double getTranslationDistance(){
     return GrabberCANdi.getPWM2Position().getValueAsDouble();// * Math.PI * GrabberConstants.kTranslatePulleyDiameter;
   }
   public boolean isTranslationMaxLeft(){
-    return getTranslationDistance() < GrabberConstants.KTranslationMaxLeft;
+    return false;//getTranslationDistance() < GrabberConstants.KTranslationMaxLeft;
   }
   public boolean isTranslationMaxRight(){
-    return getTranslationDistance() > GrabberConstants.kTranslationMaxRight;
+    return false;//getTranslationDistance() > GrabberConstants.kTranslationMaxRight;
   }
   public void runGrabberFromSetAngleAndPosition(){
     //setTranslationDistance(translationPosition);
@@ -171,6 +171,6 @@ public class GrabberSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Grabber Rotation", getRotationAngle());
-    SmartDashboard.putNumber("Translation Position", getTranslationDistance());
+    SmartDashboard.putNumber("Translation Rotation", getTranslationDistance());
   }
 }

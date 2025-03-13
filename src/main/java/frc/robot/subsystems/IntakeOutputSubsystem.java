@@ -44,6 +44,15 @@ public class IntakeOutputSubsystem extends SubsystemBase {
     outputMotor.set(speed);
   }
 
+  public void setBoth(double speed){
+    setIntake(speed);
+    setOutput(speed);
+  }
+  public void setBothOpposite(double speed){
+    setIntake(speed);
+    setOutput(-(speed*7));
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

@@ -49,13 +49,15 @@ public class RobotContainer {
     m_driverController.y().whileTrue(setElvatorUp);
     m_driverController.a().whileTrue(setElevatorDown);
    // m_driverController.a().onTrue(new SetElevatorSetPoint(m_ElevatorSubsystem, ElevatorHeights.L3));
-    //m_driverController.y().onTrue(new SetElevatorSetPoint(m_ElevatorSubsystem, ElevatorHeights.L4));
+    //m_driverController.x().onTrue(new SetElevatorSetPoint(m_ElevatorSubsystem, ElevatorHeights.L4));
     m_driverController.rightBumper().whileTrue(new RotateGrabber(m_GrabberSubsystem, 0.1));
     m_driverController.leftBumper().whileTrue(new RotateGrabber(m_GrabberSubsystem, -0.1));
-    m_driverController.x().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setIntake(.30), () -> m_IntakeOutputSubsystem.setIntake(0), m_IntakeOutputSubsystem));
-    m_driverController.b().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setIntake(-.30), () -> m_IntakeOutputSubsystem.setIntake(0), m_IntakeOutputSubsystem));
-    m_driverController.povUp().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setOutput(.30), () -> m_IntakeOutputSubsystem.setOutput(0), m_IntakeOutputSubsystem));
-    m_driverController.povDown().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setOutput(-.30), () -> m_IntakeOutputSubsystem.setOutput(0), m_IntakeOutputSubsystem));
+    m_driverController.x().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(.20), () -> m_IntakeOutputSubsystem.setBoth(0), m_IntakeOutputSubsystem));
+    m_driverController.b().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(-.20), () -> m_IntakeOutputSubsystem.setBoth(0), m_IntakeOutputSubsystem));
+    m_driverController.povUp().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBothOpposite(.1), () -> m_IntakeOutputSubsystem.setBoth(0), m_IntakeOutputSubsystem));
+    m_driverController.povDown().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBothOpposite(-.1), () -> m_IntakeOutputSubsystem.setBoth(0), m_IntakeOutputSubsystem));
+    m_driverController.rightTrigger().whileTrue(Commands.startEnd(() -> m_GrabberSubsystem.setTranslation(.1), () -> m_GrabberSubsystem.setTranslation(0), m_GrabberSubsystem));
+    m_driverController.leftTrigger().whileTrue(Commands.startEnd(() -> m_GrabberSubsystem.setTranslation(-.1), () -> m_GrabberSubsystem.setTranslation(0), m_GrabberSubsystem));
   }
 
   /**
