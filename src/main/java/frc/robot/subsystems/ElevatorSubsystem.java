@@ -92,6 +92,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void runElevatorFromSetHeight(){
     setElevatorHeight(elevatorSetHeight);
   }
+  public void setHeightToCurrentPosition(){
+    elevatorSetHeight = getElevatorHeight();
+  }
 
   public void setElevatorSetPoint(ElevatorHeights elevatorSetPoint){
     if(elevatorSetPoint == ElevatorHeights.DOWN){

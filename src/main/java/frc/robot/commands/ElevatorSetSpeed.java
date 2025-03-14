@@ -33,6 +33,7 @@ public class ElevatorSetSpeed extends Command {
   @Override
   public void end(boolean interrupted) {
     ElevatorSub.setElevator(0);
+    ElevatorSub.setHeightToCurrentPosition();
   }
 
   // Returns true when the command should end.
