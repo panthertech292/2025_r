@@ -2,7 +2,13 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
 import java.util.function.Supplier;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
@@ -15,20 +21,29 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
+import frc.robot.LimelightHelpers;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -36,6 +51,16 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+    LimelightHelpers.PoseEstimate llMeasurement;
+    StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("VisionPoses", Pose2d.struct).publish();
+    PhotonCamera leftCamera;
+    PhotonCamera rightCamera;
+    AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    PhotonPoseEstimator photonPoseEstimatorLeft;
+    PhotonPoseEstimator photonPosseEstimatorRight;
+    Pose2d PhotonPoseLeft = new Pose2d();
+    Pose2d PhotonPoseRight = new Pose2d();
+    private final Field2d m_field = new Field2d(); //TODO: For testing
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -136,6 +161,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        leftCamera = new PhotonCamera("OV9281_Left");
+        rightCamera = new PhotonCamera("OV9281_Right");
+        photonPoseEstimatorLeft = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0,0,0)));
+        photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0,0,0)));
+        SmartDashboard.putData("Field", m_field);
     }
 
     /**
@@ -161,6 +191,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        leftCamera = new PhotonCamera("OV9281_Left");
+        rightCamera = new PhotonCamera("OV9281_Right");
+        photonPoseEstimatorLeft = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0,0,0)));
+        photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0,0,0)));
+        SmartDashboard.putData("Field", m_field);
     }
 
     /**
@@ -194,6 +229,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        leftCamera = new PhotonCamera("OV9281_Left");
+        rightCamera = new PhotonCamera("OV9281_Right");
+        photonPoseEstimatorLeft = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0,0,0)));
+        photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0,0,0)));
+        SmartDashboard.putData("Field", m_field);
     }
 
     /**
@@ -262,7 +302,42 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         PathConstraints constraints = new PathConstraints(2.2352, 4.0,Units.degreesToRadians(360) , Units.degreesToRadians(720)); //TODO: CONFIG THIS
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         return AutoBuilder.pathfindToPose(pose, constraints,0.0);
-  }
+    }
+
+    private void updateVisionOdometry(){
+        double omegaRPS = Units.radiansToRotations(getState().Speeds.omegaRadiansPerSecond);
+        double headingDeg = getState().Pose.getRotation().getDegrees();
+        LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
+        llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+        if (llMeasurement != null && llMeasurement.tagCount > 0 && omegaRPS < 2.0) { //TODO: Check if STD Devs is good
+            //addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds), VecBuilder.fill(.7,.7,9999999));
+            addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
+        }
+        //PhotonVision
+        var leftResult = leftCamera.getLatestResult();
+        
+        if(leftResult.hasTargets() && leftResult.getBestTarget().getPoseAmbiguity() < 0.2){ 
+            getEstimatedGlobalPoseLeft().ifPresent(estimate -> {PhotonPoseLeft = estimate.estimatedPose.toPose2d();});
+        }
+        var rightResult = rightCamera.getLatestResult();
+        if(rightResult.hasTargets() && rightResult.getBestTarget().getPoseAmbiguity() < 0.2){ 
+            getEstimatedGlobalPoseRight().ifPresent(estimate -> {PhotonPoseRight = estimate.estimatedPose.toPose2d();});
+        }
+    }
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPoseLeft() {
+        return photonPoseEstimatorLeft.update(leftCamera.getLatestResult());
+    }
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPoseRight() {
+        return photonPosseEstimatorRight.update(rightCamera.getLatestResult());
+    }
+
+
+    public void poseToLL() { //NOTE: USE THIS FOR TESTING ONLY
+        if(llMeasurement != null && llMeasurement.tagCount > 0){
+            resetPose(llMeasurement.pose);
+        }
+    }
 
     @Override
     public void periodic() {
@@ -283,6 +358,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        /*updateVisionOdometry();
+        if(llMeasurement.pose != null){
+            m_field.getObject("llPose").setPose(llMeasurement.pose);
+        }
+        if(PhotonPoseLeft != null){
+            m_field.getObject("photonLeftPose").setPose(PhotonPoseLeft);
+        }
+        if(PhotonPoseRight != null){
+            m_field.getObject("photonRightPose").setPose(PhotonPoseRight);
+        }*/
     }
 
     private void startSimThread() {

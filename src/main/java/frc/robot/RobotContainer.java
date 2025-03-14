@@ -35,7 +35,7 @@ import frc.robot.subsystems.IntakeOutputSubsystem;
 public class RobotContainer {
   //Joysticks
   private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  //private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   //Subsystems
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
@@ -49,7 +49,7 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-  .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+  .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
   .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -72,25 +72,39 @@ public class RobotContainer {
     drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
     .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
     .withRotationalRate(-driverController.getRightX() * MaxAngularRate))); // Drive counterclockwise with negative X (left)
-    
+    //Driver Conroller
+    driverController.b().whileTrue(drivetrain.applyRequest(() ->
+    drive.withVelocityX(-driverController.getLeftY() * MaxSpeed*0.25) // Drive forward with negative Y (forward)
+    .withVelocityY(-driverController.getLeftX() * MaxSpeed*0.25) // Drive left with negative X (left)
+    .withRotationalRate(-driverController.getRightX() * MaxAngularRate*0.25)));
+    driverController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    driverController.rightTrigger().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(-.20, -.20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
+    driverController.leftTrigger().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(.20, .20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
+    //Operator Controller
+    operatorController.y().whileTrue(new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
+    operatorController.a().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L2, GrabberLocations.L2));
+    operatorController.b().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L3, GrabberLocations.L3));
+    operatorController.leftBumper().whileTrue(new GrabberSetRotateSpeed(m_GrabberSubsystem, -0.1));
+    operatorController.rightBumper().whileTrue(new GrabberSetRotateSpeed(m_GrabberSubsystem, 0.1));
+
     //driverController.rightBumper().onTrue(Commands.runOnce(() -> m_ElevatorSubsystem.setElevatorSetPoint(ElevatorHeights.L3), m_ElevatorSubsystem));
-    driverController.rightBumper().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L3, GrabberLocations.L3));
-    driverController.leftBumper().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L2, GrabberLocations.L2));
+    //driverController.rightBumper().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L3, GrabberLocations.L3));
+    //driverController.leftBumper().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L2, GrabberLocations.L2));
     //Test/Manual buttons
     //driverController.rightBumper().whileTrue(new GrabberSetRotateSpeed(m_GrabberSubsystem, 0.1));
     //driverController.leftBumper().whileTrue(new GrabberSetRotateSpeed(m_GrabberSubsystem, -0.1));
-    driverController.y().whileTrue(new ElevatorSetSpeed(m_ElevatorSubsystem, 0.4));
-    driverController.a().whileTrue(new ElevatorSetSpeed(m_ElevatorSubsystem, -0.4));
+    //driverController.y().whileTrue(new ElevatorSetSpeed(m_ElevatorSubsystem, 0.4));
+    //driverController.a().whileTrue(new ElevatorSetSpeed(m_ElevatorSubsystem, -0.4));
     //driverController.x().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(.20, .20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
-    driverController.b().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(-.20, -.20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
+    //driverController.b().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(-.20, -.20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
     //driverController.povUp().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(.1, -.7), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
-    driverController.x().whileTrue(new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
-    driverController.povUp().onTrue(Commands.runOnce(() -> m_GrabberSubsystem.setGrabberPosition(GrabberLocations.STOWED), m_GrabberSubsystem));
-    driverController.povRight().onTrue(Commands.runOnce(() -> m_GrabberSubsystem.setGrabberPosition(GrabberLocations.LOAD), m_GrabberSubsystem));
-    driverController.povLeft().onTrue(Commands.runOnce(() -> m_GrabberSubsystem.setGrabberPosition(GrabberLocations.L2), m_GrabberSubsystem));
+    //driverController.x().whileTrue(new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
+    //driverController.povUp().onTrue(Commands.runOnce(() -> m_GrabberSubsystem.setGrabberPosition(GrabberLocations.STOWED), m_GrabberSubsystem));
+    //driverController.povRight().onTrue(Commands.runOnce(() -> m_GrabberSubsystem.setGrabberPosition(GrabberLocations.LOAD), m_GrabberSubsystem));
+    //driverController.povLeft().onTrue(Commands.runOnce(() -> m_GrabberSubsystem.setGrabberPosition(GrabberLocations.L2), m_GrabberSubsystem));
 
-    driverController.start().whileTrue(new ClimbToPosition(m_ClimberSubsystem, 0.15, 9999999));
-    driverController.back().whileTrue(new ClimbToPosition(m_ClimberSubsystem, -0.15, 9999999));
+    //driverController.start().whileTrue(new ClimbToPosition(m_ClimberSubsystem, 0.65, 9999999));
+    //driverController.back().whileTrue(new ClimbToPosition(m_ClimberSubsystem, -0.15, 9999999));
 
     //driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     //driverController.b().whileTrue(drivetrain.applyRequest(() ->
@@ -103,7 +117,7 @@ public class RobotContainer {
     driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));*/
 
     // reset the field-centric heading on left bumper press
-    driverController.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

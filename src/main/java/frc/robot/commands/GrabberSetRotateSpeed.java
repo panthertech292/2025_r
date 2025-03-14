@@ -33,6 +33,7 @@ public class GrabberSetRotateSpeed extends Command {
   @Override
   public void end(boolean interrupted) {
     GrabberSub.setRotate(0);
+    GrabberSub.setRotationToCurrentPosition();
   }
 
   // Returns true when the command should end.

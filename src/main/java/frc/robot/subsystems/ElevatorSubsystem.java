@@ -80,11 +80,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     .withLimitReverseMotion(isElevatorMinHeight()));
   }
   public void setElevatorHeight(double height){
-    if(height >= 0){
+    if(height >= ElevatorConstants.kElevatorMinHeight){
       double rots = height / ElevatorConstants.kElevatorGearDiameter / Math.PI; //convert height to motor rotations
       leftElevatorMotor.setControl(elevatorMotionMagicVoltage.withPosition(rots)
       .withLimitForwardMotion(isElevatorMaxHeight())
       .withLimitReverseMotion(isElevatorMinHeight()));
+    }else{
+      leftElevatorMotor.set(0);
     }
   }
   public void runElevatorFromSetHeight(){
@@ -96,7 +98,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       elevatorSetHeight = ElevatorConstants.kElevatorMinHeight;
     }
     if(elevatorSetPoint == ElevatorHeights.L1){
-      elevatorSetHeight = ElevatorConstants.kElevatorL1Height;
+      elevatorSetHeight = ElevatorConstants.kElevatorMinHeight;
     }
     if(elevatorSetPoint == ElevatorHeights.L2){
       elevatorSetHeight = ElevatorConstants.kElevatorL2Height;

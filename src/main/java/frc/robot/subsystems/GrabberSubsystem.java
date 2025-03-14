@@ -142,6 +142,9 @@ public class GrabberSubsystem extends SubsystemBase {
     //setTranslationDistance(translationPosition);
     setRotateAngle(rotationAngle);
   }
+  public void setRotationToCurrentPosition(){
+    rotationAngle = getRotationAngle();
+  }
   public void setGrabberPosition(GrabberLocations position){
     if(position == GrabberLocations.STOWED){
       rotationAngle = GrabberConstants.kRotationStowed;

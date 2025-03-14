@@ -20,19 +20,19 @@ public final class Constants {
     //Ratios & Offsets
     public static final double kElevatorGearDiameter = 2.551;
     public static final int kIntEncoderToExtRatio = 64;
-    public static final double kElevatorEncoderOffset = 0.627;
+    public static final double kElevatorEncoderOffset = -0.145;//0.0996;
     //Current Limits
     public static final double kElevatorStatorCurrentLimit = 20; //TODO: Tune this
     //Limits
-    public static final double kElevatorMaxHeight = 28.5;
+    public static final double kElevatorMaxHeight = 23.5;
     public static final double kElevatorMinHeight = 0.25;
     //Heights
-    public static final double kElevatorL1Height = 0;
-    public static final double kElevatorL2Height = 0; 
-    public static final double kElevatorL3Height = 15; 
+    public static final double kElevatorL1Height = 0.25;
+    public static final double kElevatorL2Height = 2.89; 
+    public static final double kElevatorL3Height = 19.3; 
     public static final double kElevatorAlgeeLowHeight = 0.25; //TODO: Tune this
     public static final double kElevatorAlgeeHighHeight = 0.25; //TODO: Tune this
-    public static final double kElevatorLoadHeight = 0;
+    public static final double kElevatorLoadHeight = 0.25;
   }
   public static class GrabberConstants {
     public static enum GrabberLocations{STOWED,L1, L2, L3, ALGEE_LOW, ALGEE_HIGH, LOAD}
@@ -58,11 +58,11 @@ public final class Constants {
     //Positions
     public static final double kRotationStowed = 0;
     public static final double kRotationL1 = 0; //TODO: Find this!
-    public static final double kRotationL2 = -0.04;
-    public static final double kRotationL3 = -0.02; //TODO: Find this!
+    public static final double kRotationL2 = 0;//-0.04;
+    public static final double kRotationL3 = 0;//-0.02; //TODO: Find this!
     public static final double kRotationAlgeeLow = 0; //TODO: Find this!
     public static final double kRotationAlgeeHigh = 0; //TODO: Find this!
-    public static final double kRotationLoad = -0.053;
+    public static final double kRotationLoad = -0.088;//-0.053;
   }
   public static class IntakeOutputConstants{
     //Devices
