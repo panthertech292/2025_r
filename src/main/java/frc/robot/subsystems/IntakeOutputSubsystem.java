@@ -4,24 +4,34 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
+import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.S1CloseStateValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeOutputConstants;
 
 public class IntakeOutputSubsystem extends SubsystemBase {
   private final TalonFXS intakeMotor;
   private final TalonFXS outputMotor;
+  private final CANdi GrabberCANdi;
   /** Creates a new IntakeOutputSubsystem. */
   public IntakeOutputSubsystem() {
+    //CANdi Config
+    GrabberCANdi = new CANdi(IntakeOutputConstants.kCANdi);
+    CANdiConfiguration CANdiConfig = new CANdiConfiguration();
+    CANdiConfig.DigitalInputs.S1CloseState = S1CloseStateValue.CloseWhenLow;
+    GrabberCANdi.getConfigurator().apply(CANdiConfig);
     //Intake Motor Config
     intakeMotor = new TalonFXS(IntakeOutputConstants.kIntakeMotor);
     TalonFXSConfiguration intakeMotorConfig = new TalonFXSConfiguration();
     intakeMotorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
-    intakeMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    intakeMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     intakeMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     intakeMotorConfig.CurrentLimits.SupplyCurrentLimit = IntakeOutputConstants.kSupplyCurrentLimit;
     intakeMotor.getConfigurator().apply(intakeMotorConfig);
@@ -40,10 +50,12 @@ public class IntakeOutputSubsystem extends SubsystemBase {
   public void setOutput(double speed){
     outputMotor.set(speed);
   }
-
   public void setBoth(double intakeSpeed, double outputSpeed){
     setIntake(intakeSpeed);
     setOutput(outputSpeed);
+  }
+  public boolean coralIsInOutput(){
+    return GrabberCANdi.getS1Closed().getValue();
   }
   
   @Override

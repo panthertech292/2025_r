@@ -59,16 +59,16 @@ public class GrabberSubsystem extends SubsystemBase {
     
     //Rotate Motor MotionMagic Config
     rotateMotionMagicVoltage = new MotionMagicVoltage(0);
-    rotateMotorConfig.Slot0.kG = 0;
-    rotateMotorConfig.Slot0.kS = 0;
-    rotateMotorConfig.Slot0.kV = 0; //Recalc suggests a value of 2.00
+    //rotateMotorConfig.Slot0.kG = 0;
+    rotateMotorConfig.Slot0.kS = 0.27;
+    rotateMotorConfig.Slot0.kV = 2; //Recalc suggests a value of 2.00
     rotateMotorConfig.Slot0.kA = 0; //TODO: Tune this
-    rotateMotorConfig.Slot0.kP = 0; //TODO: Tune this
-    rotateMotorConfig.Slot0.kI = 0;
-    rotateMotorConfig.Slot0.kD = 0;
-    rotateMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 0;
-    rotateMotorConfig.MotionMagic.MotionMagicAcceleration = 0;
-    rotateMotorConfig.MotionMagic.MotionMagicJerk = 0;
+    rotateMotorConfig.Slot0.kP = 100; //TODO: Tune this
+    //rotateMotorConfig.Slot0.kI = 0;
+    //rotateMotorConfig.Slot0.kD = 0;
+    rotateMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 4;
+    rotateMotorConfig.MotionMagic.MotionMagicAcceleration = 8;
+    rotateMotorConfig.MotionMagic.MotionMagicJerk = 80;
 
     rotateMotor.getConfigurator().apply(rotateMotorConfig);
     //Translation motor config
@@ -77,24 +77,24 @@ public class GrabberSubsystem extends SubsystemBase {
     TalonFXSConfiguration translationMotorConfig = new TalonFXSConfiguration();
     translationMotorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
     translationMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    translationMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    translationMotorConfig.CurrentLimits.StatorCurrentLimit = GrabberConstants.kTranslateStatorCurrentLimit;
-    translationMotorConfig.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.FusedCANdiPWM2;
+    //translationMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    //translationMotorConfig.CurrentLimits.StatorCurrentLimit = GrabberConstants.kTranslateStatorCurrentLimit;
+    translationMotorConfig.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANdiPWM2;
     translationMotorConfig.ExternalFeedback.FeedbackRemoteSensorID = GrabberConstants.kCANdi;
     translationMotorConfig.ExternalFeedback.RotorToSensorRatio = GrabberConstants.kTranslateIntEncoderToExtRatio;
 
     //Translate Motor MotionMagic Config
     translationMotionMagicVoltage = new MotionMagicVoltage(0);
-    translationMotorConfig.Slot0.kG = 0;
-    translationMotorConfig.Slot0.kS = 0;
-    translationMotorConfig.Slot0.kV = 0; //Recalc suggests 2.44
-    translationMotorConfig.Slot0.kA = 0; //TODO: Tune this
-    translationMotorConfig.Slot0.kP = 0; //TODO: Tune this
+    //translationMotorConfig.Slot0.kG = 0;
+    translationMotorConfig.Slot0.kS = 0.48;
+    translationMotorConfig.Slot0.kV = 0.1; //Recalc suggests 2.44
+    translationMotorConfig.Slot0.kA = 0; //TODO: Tune this 0.02
+    translationMotorConfig.Slot0.kP = 10; //TODO: Tune this
     translationMotorConfig.Slot0.kI = 0;
     translationMotorConfig.Slot0.kD = 0;
-    translationMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 0;
-    translationMotorConfig.MotionMagic.MotionMagicAcceleration = 0;
-    translationMotorConfig.MotionMagic.MotionMagicJerk = 0;
+    translationMotorConfig.MotionMagic.MotionMagicCruiseVelocity = 2;
+    translationMotorConfig.MotionMagic.MotionMagicAcceleration = 4;
+    translationMotorConfig.MotionMagic.MotionMagicJerk = 40;
     translationMotor.getConfigurator().apply(translationMotorConfig);
 
     BaseStatusSignal.setUpdateFrequencyForAll(100, GrabberCANdi.getPWM1Position(), GrabberCANdi.getPWM2Position());
@@ -132,20 +132,20 @@ public class GrabberSubsystem extends SubsystemBase {
   public double getTranslationDistance(){
     return GrabberCANdi.getPWM2Position().getValueAsDouble();
   }
-  public boolean isTranslationMaxLeft(){ //TODO: Re-add this
-    return false;//getTranslationDistance() < GrabberConstants.KTranslationMaxLeft;
+  public boolean isTranslationMaxLeft(){
+    return getTranslationDistance() < GrabberConstants.KTranslationMaxLeft;
   }
-  public boolean isTranslationMaxRight(){ //TODO: Re-add this
-    return false;//getTranslationDistance() > GrabberConstants.kTranslationMaxRight;
+  public boolean isTranslationMaxRight(){
+    return getTranslationDistance() > GrabberConstants.kTranslationMaxRight;
   }
   public void runGrabberFromSetAngleAndPosition(){
     //setTranslationDistance(translationPosition);
     setRotateAngle(rotationAngle);
   }
-  public void voidSetGrabberPosition(GrabberLocations position){
+  public void setGrabberPosition(GrabberLocations position){
     if(position == GrabberLocations.STOWED){
       rotationAngle = GrabberConstants.kRotationStowed;
-      translationPosition = GrabberConstants.KTranslationMaxLeft;
+      translationPosition = GrabberConstants.kTranslationStowed;
     }
     if(position == GrabberLocations.L1){
       rotationAngle = GrabberConstants.kRotationL1;
@@ -153,7 +153,7 @@ public class GrabberSubsystem extends SubsystemBase {
     }
     if(position == GrabberLocations.L2){
       rotationAngle = GrabberConstants.kRotationL2;
-      translationPosition = GrabberConstants.KTranslationMaxLeft;
+      translationPosition = GrabberConstants.kTranslationMaxRight;
     }
     if(position == GrabberLocations.L3){
       rotationAngle = GrabberConstants.kRotationL3;
@@ -169,7 +169,7 @@ public class GrabberSubsystem extends SubsystemBase {
     }
     if(position == GrabberLocations.LOAD){
       rotationAngle = GrabberConstants.kRotationLoad;
-      translationPosition = GrabberConstants.kTranslationMaxRight;
+      translationPosition = GrabberConstants.KTranslationMaxLeft;
     }
   }
 

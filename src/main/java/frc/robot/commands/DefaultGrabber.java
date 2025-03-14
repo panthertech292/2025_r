@@ -5,19 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ClimbToPosition extends Command {
-  private ClimberSubsystem ClimbSub;
-  private double climbSpeed;
-  private double positionTarget;
-  /** Creates a new Climb. */
-  public ClimbToPosition(ClimberSubsystem Climber_Subsystem, double speed, double position) {
-    ClimbSub = Climber_Subsystem;
-    climbSpeed = speed;
-    positionTarget = position;
+public class DefaultGrabber extends Command {
+  private GrabberSubsystem GrabberSub;
+  /** Creates a new DefaultGrabber. */
+  public DefaultGrabber(GrabberSubsystem Grabber_Subsystem) {
+    GrabberSub = Grabber_Subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(GrabberSub);
   }
 
   // Called when the command is initially scheduled.
@@ -27,20 +24,19 @@ public class ClimbToPosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(ClimbSub.getRelativePosition() < positionTarget){
-      ClimbSub.setClimb(climbSpeed);
-    }
+    GrabberSub.runGrabberFromSetAngleAndPosition();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    ClimbSub.setClimb(0);
+    GrabberSub.setTranslation(0);
+    GrabberSub.setRotate(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ClimbSub.getRelativePosition() > positionTarget;
+    return false;
   }
 }

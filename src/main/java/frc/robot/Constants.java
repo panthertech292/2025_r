@@ -27,12 +27,12 @@ public final class Constants {
     public static final double kElevatorMaxHeight = 28.5;
     public static final double kElevatorMinHeight = 0.25;
     //Heights
-    public static final double kElevatorL1Height = 5; //TODO: Tune this
-    public static final double kElevatorL2Height = 5; //TODO: Tune this
-    public static final double kElevatorL3Height = 5; //TODO: Tune this
+    public static final double kElevatorL1Height = 0;
+    public static final double kElevatorL2Height = 0; 
+    public static final double kElevatorL3Height = 15; 
     public static final double kElevatorAlgeeLowHeight = 0.25; //TODO: Tune this
     public static final double kElevatorAlgeeHighHeight = 0.25; //TODO: Tune this
-    public static final double kElevatorLoadHeight = 5; //TODO: Tune this
+    public static final double kElevatorLoadHeight = 0;
   }
   public static class GrabberConstants {
     public static enum GrabberLocations{STOWED,L1, L2, L3, ALGEE_LOW, ALGEE_HIGH, LOAD}
@@ -45,31 +45,35 @@ public final class Constants {
     public static final double kTranslateIntEncoderToExtRatio = 16; //16 from gearbox
     public static final double kTranslatePulleyDiameter = 0; //TODO: Find this!
     public static final double kRotateEncoderOffset = 0.189;
-    public static final double kTranslationEncoderOffset = 0; //TODO: Find this!
+    public static final double kTranslationEncoderOffset = -0.651;
     //Current Limits
     public static final double kRotateStatorCurrentLimit = 20; //TODO: Tune this!
-    public static final double kTranslateStatorCurrentLimit = 20; //TODO: Tune this
+    public static final double kTranslateStatorCurrentLimit = 40; //TODO: Tune this
     //Limits
     public static final double kRotationMaxClockwise = 0.27; //.25 full limit
     public static final double kRotationMinCounterClockwise = -0.27; //-.24 full limit
-    public static final double KTranslationMaxLeft = 0; //TODO: Find this!
-    public static final double kTranslationMaxRight = 0; //TODO: Find this!
-    public static final double kTranslationStowed = 0;
+    public static final double KTranslationMaxLeft = -1.25;
+    public static final double kTranslationMaxRight = 1.32;
+    public static final double kTranslationStowed = -0.11;
     //Positions
     public static final double kRotationStowed = 0;
     public static final double kRotationL1 = 0; //TODO: Find this!
-    public static final double kRotationL2 = 0; //TODO: Find this!
-    public static final double kRotationL3 = 0; //TODO: Find this!
+    public static final double kRotationL2 = -0.04;
+    public static final double kRotationL3 = -0.02; //TODO: Find this!
     public static final double kRotationAlgeeLow = 0; //TODO: Find this!
     public static final double kRotationAlgeeHigh = 0; //TODO: Find this!
-    public static final double kRotationLoad = 0; //TODO: Find this!
+    public static final double kRotationLoad = -0.053;
   }
   public static class IntakeOutputConstants{
     //Devices
     public static final int kIntakeMotor = 51;
     public static final int kOutputMotor = 50;
+    public static final int kCANdi = 52;
     //Current Limits
     public static final double kSupplyCurrentLimit = 20;
+    //Speeds
+    public static final double kIntakeSpeed_ForIntake = -0.2;
+    public static final double kIntakeSpeed_ForOutput = 0.7;
   }
   public static class ClimberConstants{
     //Devices
