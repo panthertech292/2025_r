@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ElevatorConstants.ElevatorHeights;
 import frc.robot.Constants.GrabberConstants.GrabberLocations;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoScore;
 import frc.robot.commands.ClimbToPosition;
 import frc.robot.commands.DefaultElevator;
 import frc.robot.commands.DefaultGrabber;
@@ -70,6 +72,11 @@ public class RobotContainer {
     //Default commands
     m_ElevatorSubsystem.setDefaultCommand(new DefaultElevator(m_ElevatorSubsystem));
     m_GrabberSubsystem.setDefaultCommand(new DefaultGrabber(m_GrabberSubsystem));
+  }
+  private void registerCommands(){
+    NamedCommands.registerCommand("AutoScoreL2-Left", new AutoScore(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem, ElevatorHeights.L2, GrabberLocations.L2, true));
+    NamedCommands.registerCommand("AutoScoreL2-Right", new AutoScore(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem, ElevatorHeights.L2, GrabberLocations.L2, true));
+    NamedCommands.registerCommand("Intake", new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
   }
 
   private void configureBindings() {
