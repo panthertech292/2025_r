@@ -20,7 +20,7 @@ public final class Constants {
     //Ratios & Offsets
     public static final double kElevatorGearDiameter = 2.551;
     public static final int kIntEncoderToExtRatio = 64;
-    public static final double kElevatorEncoderOffset = -0.145;//0.0996;
+    public static final double kElevatorEncoderOffset = -0.38232421875;
     //Current Limits
     public static final double kElevatorStatorCurrentLimit = 20; //TODO: Tune this
     //Limits
@@ -44,16 +44,16 @@ public final class Constants {
     public static final double kRotateIntEncoderToExtRatio = 16 * (145/18); // (Should be 128.89). 16 is from gearbox, 145/18 is the pulley. 
     public static final double kTranslateIntEncoderToExtRatio = 16; //16 from gearbox
     public static final double kTranslatePulleyDiameter = 0; //TODO: Find this!
-    public static final double kRotateEncoderOffset = 0.189;
+    public static final double kRotateEncoderOffset = 0.1533203125;
     public static final double kTranslationEncoderOffset = -0.651;
     //Current Limits
     public static final double kRotateStatorCurrentLimit = 20; //TODO: Tune this!
     public static final double kTranslateStatorCurrentLimit = 40; //TODO: Tune this
     //Limits
-    public static final double kRotationMaxClockwise = 0.27; //.25 full limit
-    public static final double kRotationMinCounterClockwise = -0.27; //-.24 full limit
-    public static final double KTranslationMaxLeft = -1.25;
-    public static final double kTranslationMaxRight = 1.32;
+    public static final double kRotationMaxClockwise = 0.125; //.25 full limit
+    public static final double kRotationMinCounterClockwise = -0.125; //-.24 full limit
+    public static final double KTranslationMaxLeft = 0;
+    public static final double kTranslationMaxRight = 0;
     public static final double kTranslationStowed = -0.11;
     //Positions
     public static final double kRotationStowed = 0;

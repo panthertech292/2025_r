@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -90,14 +91,14 @@ public class RobotContainer {
     driverController.leftTrigger().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(.20, .20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
     driverController.start().whileTrue(new ClimbToPosition(m_ClimberSubsystem, 0.65, 9999999));
     //Operator Controller
-    operatorController.y().whileTrue(new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
+    operatorController.a().whileTrue(new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
     operatorController.start().whileTrue(new IntakeNoRotate(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
-    operatorController.a().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L2, GrabberLocations.L2));
-    operatorController.b().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L3, GrabberLocations.L3));
+    operatorController.b().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L2, GrabberLocations.L2));
+    operatorController.y().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L3, GrabberLocations.L3));
     operatorController.leftBumper().whileTrue(new GrabberSetRotateSpeed(m_GrabberSubsystem, -0.1));
     operatorController.rightBumper().whileTrue(new GrabberSetRotateSpeed(m_GrabberSubsystem, 0.1));
-    operatorController.leftTrigger().whileTrue(new ElevatorSetSpeed(m_ElevatorSubsystem, 0.25));
-    operatorController.rightTrigger().whileTrue(new ElevatorSetSpeed(m_ElevatorSubsystem, -0.25));
+    operatorController.leftTrigger().whileTrue(new ElevatorSetSpeed(m_ElevatorSubsystem, -0.25));
+    operatorController.rightTrigger().whileTrue(new ElevatorSetSpeed(m_ElevatorSubsystem, 0.25));
 
     //driverController.rightBumper().onTrue(Commands.runOnce(() -> m_ElevatorSubsystem.setElevatorSetPoint(ElevatorHeights.L3), m_ElevatorSubsystem));
     //Test/Manual buttons

@@ -35,6 +35,7 @@ public class GrabberSubsystem extends SubsystemBase {
   private double translationPosition;
   /** Creates a new GrabberSubsystem. */
   public GrabberSubsystem() {
+    
     //CANdi Config
     GrabberCANdi = new CANdi(GrabberConstants.kCANdi);
     CANdiConfiguration CANdiConfig = new CANdiConfiguration();
@@ -98,6 +99,7 @@ public class GrabberSubsystem extends SubsystemBase {
     translationMotor.getConfigurator().apply(translationMotorConfig);
 
     BaseStatusSignal.setUpdateFrequencyForAll(100, GrabberCANdi.getPWM1Position(), GrabberCANdi.getPWM2Position());
+    rotationAngle = getRotationAngle();
   }
 
   public void setRotate(double speed){
