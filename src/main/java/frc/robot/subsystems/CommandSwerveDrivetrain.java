@@ -167,6 +167,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0,0,0)));
         SmartDashboard.putData("Field", m_field);
     }
+    //62.455 from horizontal
+    //64.92 for X ROTATE FROM 0 POINTING FORWARD
+
+    //128.855
+    //115.802
+    //X: 11.158
+    //Y: 11.7534
+    //Z: 8.134
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
