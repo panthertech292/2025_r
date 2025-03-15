@@ -62,7 +62,7 @@ public final class Constants {
     public static final double kRotationL3 = 0;//-0.02; //TODO: Find this!
     public static final double kRotationAlgeeLow = 0; //TODO: Find this!
     public static final double kRotationAlgeeHigh = 0; //TODO: Find this!
-    public static final double kRotationLoad = -0.088;//-0.053;
+    public static final double kRotationLoad = -0.0615234375;//-0.053;
   }
   public static class IntakeOutputConstants{
     //Devices

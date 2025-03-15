@@ -45,9 +45,9 @@ public class AutoScore extends Command {
     ElevatorSub.runElevatorFromSetHeight();
     if(ElevatorSub.isElevatorAtHeight()){
       if(scoringLeft){
-        IntakeOutputSub.setBoth(-.20, -.20);
-      }else{
         IntakeOutputSub.setBoth(.20, .20);
+      }else{
+        IntakeOutputSub.setBoth(-.20, -.20);
       }
     }
   }

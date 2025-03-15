@@ -56,7 +56,7 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-  .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
+  .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
   .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -66,7 +66,9 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
+    //CameraServer.startAutomaticCapture();
     configureBindings();
+    registerCommands();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto", autoChooser);
     //Default commands
@@ -75,7 +77,7 @@ public class RobotContainer {
   }
   private void registerCommands(){
     NamedCommands.registerCommand("AutoScoreL2-Left", new AutoScore(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem, ElevatorHeights.L2, GrabberLocations.L2, true));
-    NamedCommands.registerCommand("AutoScoreL2-Right", new AutoScore(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem, ElevatorHeights.L2, GrabberLocations.L2, true));
+    NamedCommands.registerCommand("AutoScoreL2-Right", new AutoScore(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem, ElevatorHeights.L2, GrabberLocations.L2, false));
     NamedCommands.registerCommand("Intake", new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
   }
 
@@ -95,8 +97,8 @@ public class RobotContainer {
     .withRotationalRate(-driverController.getRightX() * MaxAngularRate*0.25)));
     driverController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     driverController.rightTrigger().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(-.20, -.20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
-    driverController.leftTrigger().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(.20, .20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
-    driverController.start().whileTrue(new ClimbToPosition(m_ClimberSubsystem, 0.65, 9999999));
+    driverController.leftTrigger().and(driverController.rightTrigger()).whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(.20, .20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
+    driverController.start().whileTrue(new ClimbToPosition(m_ClimberSubsystem, 0.20, 9999999));
     //Operator Controller
     operatorController.a().whileTrue(new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
     operatorController.start().whileTrue(new IntakeNoRotate(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
