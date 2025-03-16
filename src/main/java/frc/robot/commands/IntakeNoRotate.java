@@ -30,6 +30,7 @@ public class IntakeNoRotate extends Command {
   @Override
   public void initialize() {
     ElevatorSub.setElevatorSetPoint(ElevatorHeights.LOAD);
+    IntakeOutputSub.setBoth(IntakeOutputConstants.kIntakeSpeed_ForIntake, IntakeOutputConstants.kIntakeSpeed_ForOutput);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,7 +38,6 @@ public class IntakeNoRotate extends Command {
   public void execute() {
     GrabberSub.runGrabberFromSetAngleAndPosition();
     ElevatorSub.runElevatorFromSetHeight();
-    IntakeOutputSub.setBoth(IntakeOutputConstants.kIntakeSpeed_ForIntake, IntakeOutputConstants.kIntakeSpeed_ForOutput);
     if(IntakeOutputSub.coralIsInOutput()){
       GrabberSub.setGrabberPosition(GrabberLocations.STOWED);
     }

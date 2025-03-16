@@ -182,6 +182,6 @@ public class GrabberSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Grabber Rotation", getRotationAngle());
-    SmartDashboard.putNumber("Translation Rotation", getTranslationDistance());
+    //SmartDashboard.putNumber("Translation Rotation", getTranslationDistance());
   }
 }

@@ -140,9 +140,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Elevator Rotation", elevatorCANdi.getPWM1Position().getValueAsDouble());
     SmartDashboard.putNumber("Elevator Position", getElevatorHeight());
-    SmartDashboard.putNumber("Elevator Stator: " , leftElevatorMotor.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator Torque: ", leftElevatorMotor.getTorqueCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Left Elveator Voltage", leftElevatorMotor.getMotorVoltage().getValueAsDouble());
+    //SmartDashboard.putNumber("Elevator Stator: " , leftElevatorMotor.getStatorCurrent().getValueAsDouble());
+    //SmartDashboard.putNumber("Elevator Torque: ", leftElevatorMotor.getTorqueCurrent().getValueAsDouble());
+    //SmartDashboard.putNumber("Left Elveator Voltage", leftElevatorMotor.getMotorVoltage().getValueAsDouble());
     //SmartDashboard.putNumber("Right Elveator Voltage", rightElevatorMotor.getMotorVoltage().getValueAsDouble());
     //SmartDashboard.putNumber("Kraken Internal Encoder", leftElevatorMotor.getPosition().getValueAsDouble());
     //System.out.println("Rotations Per Second: " + leftElevatorMotor.getVelocity());

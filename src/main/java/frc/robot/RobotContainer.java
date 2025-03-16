@@ -33,6 +33,7 @@ import frc.robot.commands.GrabberSetTranslate;
 import frc.robot.commands.Intake;
 import frc.robot.commands.IntakeNoRotate;
 import frc.robot.commands.SetupScore;
+import frc.robot.commands.driveForwardUntilPost;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -58,6 +59,8 @@ public class RobotContainer {
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
   .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+  .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  private final SwerveRequest.RobotCentric driveForward = new SwerveRequest.RobotCentric()
   .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -92,16 +95,22 @@ public class RobotContainer {
     .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
     .withRotationalRate(-driverController.getRightX() * MaxAngularRate))); // Drive counterclockwise with negative X (left)
     //Driver Conroller
+    driverController.rightBumper().whileTrue(drivetrain.applyRequest(() ->
+    driveForward.withVelocityX(.5) // Drive forward with negative Y (forward)
+    .withVelocityY(0) // Drive left with negative X (left)
+    .withRotationalRate(0)).raceWith(new driveForwardUntilPost(m_IntakeOutputSubsystem)));
+    driverController.leftBumper().whileTrue(drivetrain.applyRequest(() ->
+    driveForward.withVelocityX(-.5).withVelocityY(0).withRotationalRate(0)).raceWith(new driveForwardUntilPost(m_IntakeOutputSubsystem)));
     driverController.b().whileTrue(drivetrain.applyRequest(() ->
-    drive.withVelocityX(-driverController.getLeftY() * MaxSpeed*0.25) // Drive forward with negative Y (forward)
-    .withVelocityY(-driverController.getLeftX() * MaxSpeed*0.25) // Drive left with negative X (left)
-    .withRotationalRate(-driverController.getRightX() * MaxAngularRate*0.25)));
+    drive.withVelocityX(-driverController.getLeftY() * MaxSpeed*0.15) // Drive forward with negative Y (forward)
+    .withVelocityY(-driverController.getLeftX() * MaxSpeed*0.15) // Drive left with negative X (left)
+    .withRotationalRate(-driverController.getRightX() * MaxAngularRate*0.15)));
     driverController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     driverController.rightTrigger().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(-.20, -.20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
     driverController.leftTrigger().and(driverController.rightTrigger()).whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(.20, .20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
-    driverController.start().whileTrue(new ClimbToPosition(m_ClimberSubsystem, 0.20, 9999999));
     driverController.a().whileTrue(drivetrain.driveToPose(new Pose2d(0.851, 6.746, new Rotation2d(148.627))));
     //Operator Controller
+    operatorController.povUp().whileTrue(new ClimbToPosition(m_ClimberSubsystem, 0.25, 9999999));
     operatorController.a().whileTrue(new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
     operatorController.start().whileTrue(new IntakeNoRotate(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
     operatorController.b().onTrue(new SetupScore(m_ElevatorSubsystem, m_GrabberSubsystem, ElevatorHeights.L2, GrabberLocations.L2));

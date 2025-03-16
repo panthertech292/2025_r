@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.S1CloseStateValue;
+import com.ctre.phoenix6.signals.S2CloseStateValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,6 +27,7 @@ public class IntakeOutputSubsystem extends SubsystemBase {
     GrabberCANdi = new CANdi(IntakeOutputConstants.kCANdi);
     CANdiConfiguration CANdiConfig = new CANdiConfiguration();
     CANdiConfig.DigitalInputs.S1CloseState = S1CloseStateValue.CloseWhenLow;
+    CANdiConfig.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenLow;
     GrabberCANdi.getConfigurator().apply(CANdiConfig);
     //Intake Motor Config
     intakeMotor = new TalonFXS(IntakeOutputConstants.kIntakeMotor);
@@ -57,9 +59,14 @@ public class IntakeOutputSubsystem extends SubsystemBase {
   public boolean coralIsInOutput(){
     return GrabberCANdi.getS1Closed().getValue();
   }
+  public boolean pipeInFrontOfOutput(){
+    return GrabberCANdi.getS2Closed().getValue();
+  }
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //SmartDashboard.putBoolean("pipeInFront", pipeInFrontOfOutput());
+    //SmartDashboard.putBoolean("Pipe in Output", coralIsInOutput());
   }
 }

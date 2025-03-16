@@ -52,6 +52,7 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+    private double lastLLPoseReset = 0;
     LimelightHelpers.PoseEstimate llMeasurement;
     StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("VisionPoses", Pose2d.struct).publish();
     PhotonCamera leftCamera;
@@ -309,13 +310,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         if (llMeasurement != null && llMeasurement.tagCount > 0 && omegaRPS < 2.0) { //TODO: Check if STD Devs is good
             addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds), VecBuilder.fill(.7,.7,9999999));
-            //if(llMeasurement.avgTagDist < 0.8 && getState().Speeds.vxMetersPerSecond < 1 && getState().Speeds.vyMetersPerSecond < 1){
-            //    System.out.println(Utils.getCurrentTimeSeconds() % 5);
-            //    if(Utils.getCurrentTimeSeconds() % 5 < 1){
-            //        System.out.println("Would update Odometry to limelight!");
-                    //poseToLL();
-            //    }
-            //}
+            if(llMeasurement.avgTagDist < 1 && getState().Speeds.vxMetersPerSecond < 2 && getState().Speeds.vyMetersPerSecond < 2){
+                if((Utils.getCurrentTimeSeconds() - lastLLPoseReset) > 5){
+                    System.out.println("Trying to fix pose!");
+                    poseToLL();
+                    lastLLPoseReset = Utils.getCurrentTimeSeconds();
+                }
+            }
         }
 
         var visionEstLeft = getEstimatedGlobalPoseLeft();
@@ -382,7 +383,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
         updateVisionOdometry();
-        if(llMeasurement.pose != null){
+        if(llMeasurement != null){
             //m_field.getObject("llPose").setPose(llMeasurement.pose);
             SignalLogger.writeDoubleArray("limelightPose", new double[] {llMeasurement.pose.getX(), llMeasurement.pose.getY(), llMeasurement.pose.getRotation().getRadians()});
         }
