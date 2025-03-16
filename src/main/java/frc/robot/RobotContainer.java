@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -99,6 +100,7 @@ public class RobotContainer {
     driverController.rightTrigger().whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(-.20, -.20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
     driverController.leftTrigger().and(driverController.rightTrigger()).whileTrue(Commands.startEnd(() -> m_IntakeOutputSubsystem.setBoth(.20, .20), () -> m_IntakeOutputSubsystem.setBoth(0, 0), m_IntakeOutputSubsystem));
     driverController.start().whileTrue(new ClimbToPosition(m_ClimberSubsystem, 0.20, 9999999));
+    driverController.a().whileTrue(drivetrain.driveToPose(new Pose2d(0.851, 6.746, new Rotation2d(148.627))));
     //Operator Controller
     operatorController.a().whileTrue(new Intake(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));
     operatorController.start().whileTrue(new IntakeNoRotate(m_ElevatorSubsystem, m_GrabberSubsystem, m_IntakeOutputSubsystem));

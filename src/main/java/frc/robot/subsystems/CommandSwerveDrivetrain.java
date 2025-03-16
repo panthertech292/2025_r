@@ -162,11 +162,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
-        leftCamera = new PhotonCamera("OV9281-LEFT");
-        rightCamera = new PhotonCamera("OV9281-RIGHT");
-        photonPoseEstimatorLeft = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, -0.2834132, 0.2066036), new Rotation3d(0,0,Units.degreesToRadians(-64.92))));
-        photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, 0.2834132, 0.2066036), new Rotation3d(0,0,Units.degreesToRadians(64.92))));
-        SmartDashboard.putData("Field", m_field);
+        configPhotonVision();
     }
     //62.455 from horizontal
     //64.92 for X ROTATE FROM 0 POINTING FORWARD
@@ -200,11 +196,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
-        leftCamera = new PhotonCamera("OV9281-LEFT");
-        rightCamera = new PhotonCamera("OV9281-RIGHT");
-        photonPoseEstimatorLeft = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, -0.2834132, 0.2066036), new Rotation3d(0,0,Units.degreesToRadians(-64.92))));
-        photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, 0.2834132, 0.2066036), new Rotation3d(0,0,Units.degreesToRadians(64.92))));
-        SmartDashboard.putData("Field", m_field);
+        configPhotonVision();
     }
 
     /**
@@ -238,11 +230,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
-        leftCamera = new PhotonCamera("OV9281-LEFT");
-        rightCamera = new PhotonCamera("OV9281-RIGHT");
-        photonPoseEstimatorLeft = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, -0.2834132, 0.2066036), new Rotation3d(0,0,Units.degreesToRadians(-64.92))));
-        photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, 0.2834132, 0.2066036), new Rotation3d(0,0,Units.degreesToRadians(64.92))));
-        SmartDashboard.putData("Field", m_field);
+        configPhotonVision();
     }
 
     /**
@@ -321,14 +309,57 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         if (llMeasurement != null && llMeasurement.tagCount > 0 && omegaRPS < 2.0) { //TODO: Check if STD Devs is good
             addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds), VecBuilder.fill(.7,.7,9999999));
-            //addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
+            //if(llMeasurement.avgTagDist < 0.8 && getState().Speeds.vxMetersPerSecond < 1 && getState().Speeds.vyMetersPerSecond < 1){
+            //    System.out.println(Utils.getCurrentTimeSeconds() % 5);
+            //    if(Utils.getCurrentTimeSeconds() % 5 < 1){
+            //        System.out.println("Would update Odometry to limelight!");
+                    //poseToLL();
+            //    }
+            //}
         }
+
+        var visionEstLeft = getEstimatedGlobalPoseLeft();
+        //visionEst.ifPresent(est -> {addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, VecBuilder.fill(.7,.7,9999999));});
+        visionEstLeft.ifPresent(est -> {PhotonPoseLeft = est.estimatedPose.toPose2d();});
+        var visionEstRight = getEstimatedGlobalPoseRight();
+        //visionEst.ifPresent(est -> {addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, VecBuilder.fill(.7,.7,9999999));});
+        visionEstRight.ifPresent(estRight -> {PhotonPoseRight = estRight.estimatedPose.toPose2d();});
     }
     
     public void poseToLL() { //NOTE: USE THIS FOR TESTING ONLY
         if(llMeasurement != null && llMeasurement.tagCount > 0){
             resetPose(llMeasurement.pose);
         }
+    }
+
+    public void configPhotonVision(){
+        //62.455 from horizontal
+        //64.92 for X ROTATE FROM 0 POINTING FORWARD
+        leftCamera = new PhotonCamera("OV9281-LEFT");
+        rightCamera = new PhotonCamera("OV9281-RIGHT");
+        photonPoseEstimatorLeft = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, 0.2834132, 0.2066036), new Rotation3d(0,Units.degreesToRadians(27.45),Units.degreesToRadians(64.92))));
+        photonPoseEstimatorLeft.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, -0.2834132, 0.2066036), new Rotation3d(0,Units.degreesToRadians(27.45),Units.degreesToRadians(-64.92))));
+        photonPosseEstimatorRight.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        SmartDashboard.putData("Field", m_field);
+    }
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPoseLeft() {
+        Optional<EstimatedRobotPose> visionEst = Optional.empty();
+        for (var change : leftCamera.getAllUnreadResults()) {
+            visionEst = photonPoseEstimatorLeft.update(change);
+            //photonPoseEstimatorLeft.addHeadingData(change.getTimestampSeconds(), getState().Pose.getRotation());
+            //updateEstimationStdDevs(visionEst, change.getTargets());
+        }
+        return visionEst;
+    }
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPoseRight() {
+        Optional<EstimatedRobotPose> visionEst = Optional.empty();
+        for (var change : rightCamera.getAllUnreadResults()) {
+            visionEst = photonPosseEstimatorRight.update(change);
+            //photonPosseEstimatorRight.addHeadingData(change.getTimestampSeconds(), getState().Pose.getRotation());
+            //updateEstimationStdDevs(visionEst, change.getTargets());
+        }
+        return visionEst;
     }
 
     @Override
@@ -353,15 +384,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         updateVisionOdometry();
         if(llMeasurement.pose != null){
             //m_field.getObject("llPose").setPose(llMeasurement.pose);
-            SignalLogger.writeDoubleArray("limelightPose", new double[] {llMeasurement.pose.getX(), llMeasurement.pose.getY(), llMeasurement.pose.getRotation().getDegrees()});
+            SignalLogger.writeDoubleArray("limelightPose", new double[] {llMeasurement.pose.getX(), llMeasurement.pose.getY(), llMeasurement.pose.getRotation().getRadians()});
         }
-        //if(PhotonPoseLeft != null){
-        //    System.out.println(PhotonPoseLeft.getX());
-        //    m_field.getObject("photonLeftPose").setPose(PhotonPoseLeft);
-        /*
+        if(PhotonPoseLeft != null){
+            //System.out.println(PhotonPoseLeft.getX());
+            //m_field.getObject("photonLeftPose").setPose(PhotonPoseLeft);
+            SignalLogger.writeDoubleArray("photonLeftPose", new double[] {PhotonPoseLeft.getX(), PhotonPoseLeft.getY(), PhotonPoseLeft.getRotation().getRadians()});
+        }
         if(PhotonPoseRight != null){
-            m_field.getObject("photonRightPose").setPose(PhotonPoseRight);
-        }*/
+            //m_field.getObject("photonRightPose").setPose(PhotonPoseRight);
+            SignalLogger.writeDoubleArray("photonRightPose", new double[] {PhotonPoseRight.getX(), PhotonPoseRight.getY(), PhotonPoseRight.getRotation().getRadians()});
+        }
     }
 
     private void startSimThread() {
