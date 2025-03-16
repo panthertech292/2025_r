@@ -70,7 +70,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
-    //CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture().setFPS(20);
     configureBindings();
     registerCommands();
     autoChooser = AutoBuilder.buildAutoChooser();

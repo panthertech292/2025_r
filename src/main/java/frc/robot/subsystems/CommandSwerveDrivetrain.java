@@ -310,13 +310,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         if (llMeasurement != null && llMeasurement.tagCount > 0 && omegaRPS < 2.0) { //TODO: Check if STD Devs is good
             addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds), VecBuilder.fill(.7,.7,9999999));
-            if(llMeasurement.avgTagDist < 1 && getState().Speeds.vxMetersPerSecond < 2 && getState().Speeds.vyMetersPerSecond < 2){
+            /*if(llMeasurement.avgTagDist < 3 && getState().Speeds.vxMetersPerSecond < 2 && getState().Speeds.vyMetersPerSecond < 2){
                 if((Utils.getCurrentTimeSeconds() - lastLLPoseReset) > 5){
-                    System.out.println("Trying to fix pose!");
+                    System.out.println("Trying to fix pose! STATS: TagDist = " + llMeasurement.avgTagDist + " SpeedX = " + getState().Speeds.vxMetersPerSecond + " SpeedY = " + getState().Speeds.vyMetersPerSecond);
                     poseToLL();
                     lastLLPoseReset = Utils.getCurrentTimeSeconds();
                 }
-            }
+            }*/
         }
 
         var visionEstLeft = getEstimatedGlobalPoseLeft();
@@ -342,7 +342,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         photonPoseEstimatorLeft.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, -0.2834132, 0.2066036), new Rotation3d(0,Units.degreesToRadians(-27.45),Units.degreesToRadians(-64.92))));
         photonPosseEstimatorRight.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        SmartDashboard.putData("Field", m_field);
+        SmartDashboard.putData("FieldMap!", m_field);
+        
     }
     public Optional<EstimatedRobotPose> getEstimatedGlobalPoseLeft() {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
@@ -386,6 +387,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if(llMeasurement != null){
             //m_field.getObject("llPose").setPose(llMeasurement.pose);
             SignalLogger.writeDoubleArray("limelightPose", new double[] {llMeasurement.pose.getX(), llMeasurement.pose.getY(), llMeasurement.pose.getRotation().getRadians()});
+            SignalLogger.writeDouble("LimeLight avgTagDist", llMeasurement.avgTagDist);
         }
         if(PhotonPoseLeft != null){
             //System.out.println(PhotonPoseLeft.getX());

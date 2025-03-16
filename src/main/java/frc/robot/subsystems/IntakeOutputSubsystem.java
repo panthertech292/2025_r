@@ -34,16 +34,16 @@ public class IntakeOutputSubsystem extends SubsystemBase {
     TalonFXSConfiguration intakeMotorConfig = new TalonFXSConfiguration();
     intakeMotorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
     intakeMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    intakeMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    intakeMotorConfig.CurrentLimits.SupplyCurrentLimit = IntakeOutputConstants.kSupplyCurrentLimit;
+    //intakeMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    //intakeMotorConfig.CurrentLimits.SupplyCurrentLimit = IntakeOutputConstants.kSupplyCurrentLimit;
     intakeMotor.getConfigurator().apply(intakeMotorConfig);
     //Output Motor Config
     outputMotor = new TalonFXS(IntakeOutputConstants.kOutputMotor);
     TalonFXSConfiguration outputMotorConfig = new TalonFXSConfiguration();
     outputMotorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
     outputMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    outputMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    outputMotorConfig.CurrentLimits.SupplyCurrentLimit = IntakeOutputConstants.kSupplyCurrentLimit;
+    //outputMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    //outputMotorConfig.CurrentLimits.SupplyCurrentLimit = IntakeOutputConstants.kSupplyCurrentLimit;
     outputMotor.getConfigurator().apply(outputMotorConfig);
   }
   public void setIntake(double speed){
