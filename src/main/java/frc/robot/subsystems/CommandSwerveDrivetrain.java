@@ -337,9 +337,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         //64.92 for X ROTATE FROM 0 POINTING FORWARD
         leftCamera = new PhotonCamera("OV9281-LEFT");
         rightCamera = new PhotonCamera("OV9281-RIGHT");
-        photonPoseEstimatorLeft = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, 0.2834132, 0.2066036), new Rotation3d(0,Units.degreesToRadians(27.45),Units.degreesToRadians(64.92))));
+        photonPoseEstimatorLeft = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, 0.2834132, 0.2066036), new Rotation3d(0,Units.degreesToRadians(-27.45),Units.degreesToRadians(64.92))));
         photonPoseEstimatorLeft.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, -0.2834132, 0.2066036), new Rotation3d(0,Units.degreesToRadians(27.45),Units.degreesToRadians(-64.92))));
+        photonPosseEstimatorRight = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(new Translation3d(0.29853636, -0.2834132, 0.2066036), new Rotation3d(0,Units.degreesToRadians(-27.45),Units.degreesToRadians(-64.92))));
         photonPosseEstimatorRight.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         SmartDashboard.putData("Field", m_field);
     }
